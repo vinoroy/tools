@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+        <h1>Backlog</h1>
+        </div>
+    </div>
+</div>
+<div class="container">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in activeTodos %}
+        {% if item.priority == '1' %}
+            <tr class='danger'>
+        {% elif item.priority == '2' %}
+            <tr class='warning'>
+        {% elif item.priority == '3' %}
+            <tr class='info'>
+        {% endif %}
+        </tr>
+            <td>{{ item.title }}</td>
+            <td>{{ item.type }}</td>
+            <td><a href="{% url 'blog' item.title %}">Blog</a></td>
+        {% endfor %}
+    </tbody>
+  </table>
+
+
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in finishedTodos %}
+        {% if item.priority == '1' %}
+            <tr class='danger'>
+        {% elif item.priority == '2' %}
+            <tr class='warning'>
+        {% elif item.priority == '3' %}
+            <tr class='info'>
+        {% endif %}>
+            <td>{{ item.title }}</td>
+            <td>{{ item.type }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+<a href="{% url 'blog' '123' %}">Blog</a>
+
+
+</div>
+
+{% endblock content %}

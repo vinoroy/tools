@@ -1,0 +1,5 @@
+- create git
+- create github
+- modifiy model for actual todo listneeds
+- modify display todo table in template
+- 
