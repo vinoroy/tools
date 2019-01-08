@@ -28,19 +28,15 @@ class Todo(models.Model):
         ('T', 'Terminé'),
     )
 
-    colorChoices = (
-        ('danger', 'danger'),
-        ('warning', 'warning'),
-        ('active', 'active'),
-    )
-
+    category = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
-    dateCreated = models.DateField(null=True, blank=True)
-    type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
+    dateCreated = models.DateField(auto_now_add=True,null=True, blank=True)
     priority = models.CharField(max_length=3, choices=priorityChoices, default='1')
     status = models.CharField(max_length=10,choices=statusChoices,default='ND')
     description = models.CharField(max_length=100,default='',null=True,blank=True)
-    finishDate = models.DateField(null=True,blank=True)
+    timeSpent = models.FloatField(null=True,blank=True,default=None)
+    distance = models.FloatField(null=True,blank=True,default=None)
+    upDate = models.DateField(null=True,blank=True)
 
 
     def __init__(self, *args, **kwargs):
@@ -50,9 +46,9 @@ class Todo(models.Model):
     def save(self, *args, **kwargs):
 
         if self.status == 'T' :
-            self.finishDate = datetime.now()
+            self.upDate = datetime.now()
         else:
-            self.finishDate = None
+            self.upDate = None
         super(Todo, self).save(*args, **kwargs)
 
 

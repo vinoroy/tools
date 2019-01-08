@@ -1,20 +1,27 @@
-{% extends "base.html" %}
+{% extends "basetodo.html" %}
 
 {% block content %}
 
-<div class="container-fluid">
+
+
+<div class="container">
+
     <div class="row">
         <div class="col-sm-12">
-        <h1>Backlog</h1>
+        <h2>Task backlog</h2>
         </div>
     </div>
-</div>
-<div class="container">
+
   <table class="table table-hover">
     <thead>
       <tr>
+        <th>Category</th>
         <th>Title</th>
-        <th>Type</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Date</th>
+
       </tr>
     </thead>
     <tbody>
@@ -26,21 +33,38 @@
         {% elif item.priority == '3' %}
             <tr class='info'>
         {% endif %}
-        </tr>
+
+            <td>{{ item.category }}</td>
             <td>{{ item.title }}</td>
-            <td>{{ item.type }}</td>
-            <td><a href="{% url 'blog' item.title %}">Blog</a></td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.priority }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.upDate }}</td>
+            <td><a href="{% url 'taskedit' item.id %}">Edit</a></td>
+            </tr>
         {% endfor %}
+
     </tbody>
   </table>
 
 
+    <div class="row">
+        <div class="col-sm-12">
+        <h2>Daily completed tasks</h2>
+        </div>
+    </div>
 
-  <table class="table table-hover">
+
+   <table class="table table-hover">
     <thead>
       <tr>
+        <th>Category</th>
         <th>Title</th>
-        <th>Type</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Date</th>
+
       </tr>
     </thead>
     <tbody>
@@ -51,15 +75,17 @@
             <tr class='warning'>
         {% elif item.priority == '3' %}
             <tr class='info'>
-        {% endif %}>
+        {% endif %}
+            <td>{{ item.category }}</td>
             <td>{{ item.title }}</td>
-            <td>{{ item.type }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.priority }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.upDate }}</td>
         </tr>
         {% endfor %}
     </tbody>
   </table>
-
-<a href="{% url 'blog' '123' %}">Blog</a>
 
 
 </div>
