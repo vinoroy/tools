@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block bk %}
+
+
+<style>
+
+        body{height:100%;
+           width:100%;
+           background-image:url(../static/tools5.jpg);/*your background image*/
+           background-repeat:no-repeat;/*we want to have one single image not a repeated one*/
+           background-size:cover;/*this sets the image to fullscreen covering the whole screen*/
+           /*css hack for ie*/
+           filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../static/tools5.jpg',sizingMethod='scale');
+            -ms-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../static/tools5.jpg',sizingMethod='scale')";
+        }
+
+ </style>
+
+{% endblock bk %}
+
+
+{% block nav %}
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Tools</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Options<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'list' %}">Todo</a></li>
+          <li><a href="{% url 'fipi' %}">Fipi</a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+{% endblock nav %}

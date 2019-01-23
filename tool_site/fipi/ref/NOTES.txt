@@ -1,0 +1,7 @@
+/Library/PostgreSQL/11
+
+/Library/PostgreSQL/11/data
+
+Mill .. 12
+
+port 5432

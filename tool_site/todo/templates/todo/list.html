@@ -47,6 +47,8 @@
     </tbody>
   </table>
 
+  <a class="btn btn-primary btn-md" href="{% url 'taskedit' %}">Add a task</a>
+
 
     <div class="row">
         <div class="col-sm-12">
@@ -82,6 +84,7 @@
             <td>{{ item.priority }}</td>
             <td>{{ item.status }}</td>
             <td>{{ item.upDate }}</td>
+            <td><a href="{% url 'taskedit' item.id %}">Edit</a></td>
         </tr>
         {% endfor %}
     </tbody>

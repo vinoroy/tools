@@ -5,21 +5,23 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Todo list</a>
+      <a class="navbar-brand" href="{% url 'index' %}">Tools</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
-      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Options<span class="caret"></span></a>
+      <li class="active"><a href="{% url 'list' %}">Backlog</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">View tasks<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="{% url 'list' %}">List by type</a></li>
-          <li><a href="{% url 'log' %}">Log page</a></li>
-          <li><a href="#">Page 1-3</a></li>
+          <li><a href="{% url 'completed' 7 'T' 'Completed tasks - 7 days' %}">Completed tasks - 7 days</a></li>
+          <li><a href="{% url 'completed' 30 'T' 'Completed tasks - 30 days' %}">Completed tasks - 30 days</a></li>
+          <li><a href="{% url 'completed' 999 'T' 'Completed tasks - All' %}">Completed tasks - All</a></li>
+          <li><a href="{% url 'completed' 7 'Exercice' 'Exercices - 7 days' %}">Exercices - 7 days</a></li>
+          <li><a href="{% url 'completed' 30 'Exercice' 'Exercices - 30 days' %}">Exercices - 30 days</a></li>
+          <li><a href="{% url 'completed' 999 'Exercice' 'Exercices - All' %}">Exercices - All</a></li>
         </ul>
       </li>
     </ul>
   </div>
 </nav>
-
 
 
 
