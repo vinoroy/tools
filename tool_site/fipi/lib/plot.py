@@ -19,12 +19,13 @@ init_notebook_mode(connected=True)
 
 
 
-def plot_AdjCloseVsDate(portfoilio):
+def plot_AssetDataVsDates(portfoilio,dataStr):
     """
     This function produces a date vs adjusted close price plot
 
     Args :
-        - (dict) of the portfolio stocks
+        - portfolio : (dict) of the portfolio stocks
+        - dataStr : (string) string of the requested asset data
 
     Return :
         - plot
@@ -37,12 +38,12 @@ def plot_AdjCloseVsDate(portfoilio):
     for assetID in portfoilio.assets:
 
         # extract the adjusted close price of the asset and dates
-        data = portfoilio.assets[assetID].getAdjCloseAndDates()
+        data = portfoilio.assets[assetID].getAssetDataAndDates(dataStr)
 
         # Create traces
         trace = go.Scatter(
             x=data['Dates'],
-            y=data['Close'],
+            y=data['Data'],
             mode='lines',
             name=assetID
         )
@@ -51,7 +52,7 @@ def plot_AdjCloseVsDate(portfoilio):
 
 
     layout = dict(
-        title='Adjusted close price vs time',
+        title=dataStr,
         xaxis=dict(
             rangeselector=dict(
                 buttons=list([
@@ -81,86 +82,13 @@ def plot_AdjCloseVsDate(portfoilio):
             type='date',
             title='Time'
         ),
-        yaxis=dict(title='Adjusted close price')
+        yaxis=dict(title=dataStr)
     )
 
     fig = dict(data=traces, layout=layout)
 
     iplot(fig, filename='basic-line')
 
-
-
-
-def plot_EstProfitVsDate(portfoilio):
-    """
-    This function produces a date vs estimated profit plot
-
-    Args :
-        - (dict) of the portfolio stocks
-
-    Return :
-        - plot
-
-    """
-
-
-    traces = []
-
-    # iterate over each portfolio asset
-    for assetID in portfoilio.assets:
-
-        # extract the estimated profit and dates
-        data = portfoilio.assets[assetID].getEstProfitAndDates()
-
-        # Create traces
-        trace = go.Scatter(
-            x=data['Dates'],
-            y=data['Profit'],
-            mode='lines',
-            name= assetID
-        )
-
-        traces.append(trace)
-
-
-    layout = dict(
-        title='Estimated profit vs time',
-        xaxis=dict(
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=1,
-                         label='1m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=6,
-                         label='6m',
-                         step='month',
-                         stepmode='backward'),
-
-                    dict(count=1,
-                         label='1y',
-                         step='year',
-                         stepmode='backward'),
-                    dict(count=2,
-                         label='2y',
-                         step='year',
-                         stepmode='backward'),
-                    dict(step='all')
-                ])
-            ),
-            rangeslider=dict(
-                visible=True
-            ),
-            type='date',
-            title='Time'
-        ),
-        yaxis=dict(title='Estimated profit')
-    )
-
-    fig = dict(data=traces, layout=layout)
-
-
-    iplot(fig, filename='basic-line')
 
 
 

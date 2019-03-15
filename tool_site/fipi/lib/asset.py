@@ -79,7 +79,7 @@ class Asset(object):
         self.annualReturn = []
 
         # set the asset data that come from calculations
-        self.setAssetData()
+        # self.setAssetData()
 
 
     def calcAcquistionValue(self):
@@ -94,9 +94,9 @@ class Asset(object):
 
 
 
-    def getHistoricalPrice(self,startDate,endDate):
+    def getHistoricalPriceFromSource(self,startDate,endDate):
         """
-        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates 
+        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates from the source
 
         Args :
         - startDate : (string) start date of the extraction (format YY-MM-DD)
@@ -109,8 +109,24 @@ class Asset(object):
         raise NotImplementedError("Should have implemented this")
 
 
+    def getHistoricalPriceFromDB(self):
+        """
+        Gets all of the historical prices (open, low, high, close, adj close and volume) from the local db
 
-    def calcAssetPerformanceMatrix(self,startDate,endDate):
+        Args :
+        - none
+
+        Return :
+            - (DataFrame) open, low, high, close, adj close and volume matrix between a set of dates
+        """
+
+        raise NotImplementedError("Should have implemented this")
+
+
+
+
+
+    def calcAssetPerformanceMatrix(self):
         """
         Calculates the asset performance matrix composed of the key performance indicators for each of the trading dates
         between the selected start and end dates :
@@ -121,18 +137,17 @@ class Asset(object):
             - Annual return
         
         Args :
-        - startDate : (string) start date of the extraction (format YY-MM-DD)
-        - endDate : (string) end date of the extraction (format YY-MM-DD)
-
+            - none
 
         Return :
             - (DataFrame) matrix of the key performance indicators for each date 
         """
 
         # get the price data from the feed
-        perfMat = self.getHistoricalPrice(startDate, endDate)
+        perfMat = self.getHistoricalPriceFromDB()
 
         # calculate the performance values for each time stamp
+        perfMat['Acquisition'] = self.calcAcquistionValue()
         perfMat['Market'] = perfMat[['Close']] * self.volume
         perfMat['Est Profit'] = perfMat['Market'] - self.calcAcquistionValue()
         perfMat['% Est Profit'] = perfMat['Est Profit'] / self.calcAcquistionValue() * 100
@@ -239,19 +254,8 @@ class Asset(object):
         """
 
 
-        # determin the end date of the oerformance matrix based on the status of the asset. If the asset has already been
-        # sold then the end date will correspond to the sale date, inf not then it is the last trading day
-        if self.saleDate != None:
-
-            endDate = self.saleDate
-
-        else:
-
-            endDate = datetime.datetime.now().strftime("%Y-%m-%d")
-
-
         # calculate the performance matrix
-        self.perfMatrix = self.calcAssetPerformanceMatrix(self.purchaseDate,endDate)
+        self.perfMatrix = self.calcAssetPerformanceMatrix()
 
         # calculate the performace vector
         self.perfVector = self.calcCurrentPerformanceVector()
@@ -261,77 +265,30 @@ class Asset(object):
 
 
 
-    def getAdjCloseAndDates(self):
+
+    def getAssetDataAndDates(self, dataStr):
         """
-        This method gets the adjusted close prices of the asset and dates
+        This method gets the asset data (adjusted close, est profit, etc.) and dates based on user selection
 
         Args :
-            - none
+            - dataStr : (string) string of the data required
 
         Return :
-            - (dict) the data adjusted close prices of the asset and dates
+            - (dict) requested data of the asset and dates
 
         """
 
         # prepare the date and close
-        datesAndClose = self.perfMatrix[['Adj Close']]
+        datesAndData = self.perfMatrix[[dataStr]]
 
-        dates = datesAndClose.index
-        close = datesAndClose['Adj Close'].values
+        dates = datesAndData.index
+        data = datesAndData[dataStr].values
 
 
         datesStr = dates.strftime("%Y-%m-%d").values
 
 
-        result = {'Dates': dates, 'DatesStr': datesStr, 'Close': close}
-
-        return result
-
-
-    def getAdjCloseAndDates_json(self):
-        """
-        This method gets the adjusted close prices of the asset and dates in json format
-
-        Args :
-            - none
-
-        Return :
-            - (json dict) the data adjusted close prices of the asset and dates
-
-        """
-
-
-        tmp = self.getAdjCloseAndDates()
-
-
-        result = {'DatesStr': tmp['DatesStr'].tolist(), 'Close' : tmp['Close'].tolist()}
-
-        result = json.dumps(result)
-
-        return result
-
-
-
-
-    def getEstProfitAndDates(self):
-        """
-        This method gets the estimated profit and dates
-
-        Args :
-            - none
-
-        Return :
-            - (dict) the data of the estimated profit of the asset and dates
-
-        """
-
-        # prepare the date and close
-        datesAndEstProfit = self.perfMatrix[['Est Profit']]
-
-        dates = datesAndEstProfit.index
-        profit = datesAndEstProfit['Est Profit'].values
-
-        result = {'Dates': dates, 'Profit': profit}
+        result = {'Dates': dates, 'DatesStr': datesStr, 'Data': data}
 
         return result
 

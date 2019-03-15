@@ -3,46 +3,118 @@
 {% block content %}
 
 
-        <h3>This is the Fipi app</h3>
+<h3>Portfolio : {{portfolioName}}</h3>
 
 
 
-<div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
-  <script>
-
-    var js_data = {{js_data|safe}};
-
-    /* var trace1 = {
-  x: [1, 2, 3, 4],
-  y: [10, 15, 13, 17],
-  mode: 'markers'
-}; */
+{% load staticfiles %}
+<script src="{% static "fipi/js/grafPorfolio.js" %}"></script>
 
 
-    var trace1 = {
-    x: js_data.x,
-    y: js_data.y,
-    type: "scatter",
-  mode: "lines"};
+<div id="portGraf"><!-- Plotly chart will be drawn inside this DIV --></div>
 
-/* var trace2 = {
-  x: [2, 3, 4, 5],
-  y: [16, 5, 11, 10],
-  mode: 'lines'
-};
+<script>
 
-var trace3 = {
-  x: [1, 2, 3, 4],
-  y: [12, 9, 15, 12],
-  mode: 'lines+markers'
-}; */
+    var data = {{portfolioDataVsDates|safe}};
+    //var ype = {{dataType|safe}};
+    //console.log({{dataType|safe}});
+    valuesVsDatesPlot(data,"portGraf","Aaaa");
 
-var data = [ trace1 ];
+</script>
 
-var layout = {};
 
-Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
-  </script>
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Graf type
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li><a href="{% url 'fipi' portfolioName 'Adj Close' %}">Adj Close</a></li>
+      <li><a href="{% url 'fipi' portfolioName 'Est Profit' %}">Est Profit</a></li>
+      <li><a href="{% url 'fipi' portfolioName '% Est Profit' %}">% Est Profit</a></li>
+    </ul>
+  </div>
+
+
+
+<div id="assetsGraf"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+<script>
+
+    var data = {{assetDataVsDates|safe}};
+    //var ype = {{dataType|safe}};
+    //console.log({{dataType|safe}});
+    valuesVsDatesPlot(data,"assetsGraf","Aaaa");
+
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+
+<table class="table table-hover" align="left" style="width:90%">
+<!--<table id="example" class="display" style="width:50%" align="left">-->
+        <thead>
+            <tr>
+                <th>Asset ID</th>
+                <th>Purchase date</th>
+                <th>Purchase price</th>
+                <th>Volume</th>
+                <th>Acquisition</th>
+                <th>Close</th>
+                <th>Market</th>
+                <th>Est Profit</th>
+                <th>% Est Profit</th>
+                <th>Annual Return</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+        {% for line in tableData %}
+
+
+            {% for key, value in line.items %}
+
+                    {% if value == 'POS' %}
+                        <tr class='success'>
+                    {% elif value == 'NEG' %}
+                        <tr class='danger'>
+                    {% else %}
+
+
+                        <td>{{value}}</td>
+                    {% endif %}
+
+
+            {% endfor %}
+
+
+            </tr>
+
+
+        {% endfor %}
+
+
+        </tbody>
+
+</table>
+
+
+<script>
+
+$(document).ready(function() {
+    $('#example').DataTable({
+    "searching":   false,
+    "paging": false,
+
+
+    });
+} );
+
+
+</script>
 
 
 {% endblock content %}

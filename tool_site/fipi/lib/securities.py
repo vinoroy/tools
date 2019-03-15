@@ -13,6 +13,7 @@ from pandas_datareader import data as pdr
 import datetime
 from bs4 import BeautifulSoup
 
+from sqlalchemy import create_engine
 
 import urllib3
 import pandas as pd
@@ -68,29 +69,70 @@ class CommonStock(Equity):
         self.assetType = 'COMMON'
 
 
-    def getHistoricalPrice(self, startDate, endDate):
+
+    def getHistoricalPriceFromSource(self):
         """
-        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates 
+        Gets all of the historical prices (open, low, high, close, adj close and volume) between a set of dates from the source
 
         Args :
-        - startDate : (string) start date of the extraction (format YY-MM-DD)
-        - endDate : (string) end date of the extraction (format YY-MM-DD)
+        - none
 
         Return :
             - (Dataframe) open, low, high, close, adj close and volume matrix between a set of dates 
         """
 
+        # determine the end date of the oerformance matrix based on the status of the asset. If the asset has already been
+        # sold then the end date will correspond to the sale date, inf not then it is the last trading day
+        if self.saleDate != None:
+
+            endDate = self.saleDate
+
+        else:
+
+            endDate = datetime.datetime.now().strftime("%Y-%m-%d")
+
+
         # try to get the values from the yahoo finance api
         try :
-            histValues = pdr.DataReader(self.ticker, data_source='yahoo', start=startDate,end=endDate)
+            histValues = pdr.DataReader(self.ticker, data_source='yahoo', start=self.purchaseDate,end=endDate)
 
-            return histValues
+            result = histValues
 
         except:
 
-            return None
+            result = None
 
 
+        # /Users/vince/Documents/tools/tool_site/fipi/lib/price.db
+
+        print('getting data for:')
+        print(self.assetID)
+
+
+        disk_engine = create_engine('sqlite:////Users/vince/Documents/tools/tool_site/fipi/lib/price.db')
+        result.to_sql(self.assetID, disk_engine, if_exists='replace')
+
+
+    def getHistoricalPriceFromDB(self):
+        """
+        Gets all of the historical prices (open, low, high, close, adj close and volume) from the local db
+
+        Args :
+        - none
+
+        Return :
+            - (DataFrame) open, low, high, close, adj close and volume matrix between a set of dates
+        """
+
+        disk_engine = create_engine('sqlite:////Users/vince/Documents/tools/tool_site/fipi/lib/price.db')
+
+        result = pd.read_sql_query('SELECT * FROM '+ self.assetID, disk_engine)
+
+        result.set_index('Date', inplace=True)
+
+        result.index = pd.to_datetime(result.index, format='%Y-%m-%d')
+
+        return result
 
 
 
@@ -115,9 +157,9 @@ class PreferredStock(Equity):
 
 
 
-    def getHistoricalPrice(self, startDate, endDate):
+    def getHistoricalPriceFromSource(self, startDate, endDate):
         """
-        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates 
+        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates from the source
 
         Args :
         - startDate : (string) start date of the extraction (format YY-MM-DD)

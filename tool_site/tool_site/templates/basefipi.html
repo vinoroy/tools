@@ -11,10 +11,15 @@
       <a class="navbar-brand" href="{% url 'index' %}">Tools</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Aaaaa</a></li>
-      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Aaaa<span class="caret"></span></a>
+      <li class="active"><a href="#">Summary</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Portfolios<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="#">Aaaa</a></li>
+
+          {% for item in portfolioList %}
+            <li><a href="{% url 'fipi' item '% Est Profit' %}">{{item}}</a></li>
+          {% endfor %}
+
+
         </ul>
       </li>
     </ul>
